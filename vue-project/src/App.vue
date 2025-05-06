@@ -1,8 +1,10 @@
 <script>
 import Block from './components/Block.vue';
+import Result from './components/Result.vue';
 export default {
   components: {
     Block,
+    Result,
   },
   data() {
     return {
@@ -33,7 +35,7 @@ export default {
   <div id="app">
     <h1>Welcome to Your Vue.js App</h1>
     <p>This is a simple Vue.js application.</p>
-    <p v-if="showResult">reactionTime is {{ score }}ms</p>
+  <Result v-if="showResult" :score="score"/>
   </div>
   <Block v-if="isPlaying" :delay="delay" @reactionTime="endGamge"/>
   <button @click="start" :disabled="isPlaying">Play</button>
