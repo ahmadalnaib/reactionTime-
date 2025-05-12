@@ -1,10 +1,19 @@
 <script >
-
+import Project from '../components/Project.vue'
+import Navbar from '../components/Navbar.vue'
+import FilterNav from '../components/FilterNav.vue'
 export default{
+  name: 'HomeView',
+  components: {
+    Project,
+    Navbar,
+    FilterNav
+  },
   data(){
     return{
       
-      projects: []
+      projects: [],
+      filter: 'all',
 
     }
   },
@@ -26,6 +35,30 @@ export default{
       console.error('Error fetching projects:', error);
     });
   }
+  ,
+  methods: {
+    handleDelete(id) {
+      this.projects = this.projects.filter(project => project.id !== id);
+    },
+    handleCompleted(id) {
+      const project = this.projects.find(project => project.id === id);
+      if (project) {
+        project.completed = !project.completed;
+      }
+    },
+
+  },
+  computed: {
+    filteredProjects() {
+      if (this.filter === 'completed') {
+        return this.projects.filter(project => project.completed);
+      } else if (this.filter === 'ongoing') {
+        return this.projects.filter(project => !project.completed);
+      }
+      return this.projects;
+    },
+  },
+
 }
 
 </script>
@@ -34,9 +67,12 @@ export default{
   <main v-if="projects.length">
     <h1>Projects</h1>
     <p>Here are some of the projects I have worked on:</p>
-<div v-for="project in projects" :key="project.id">
-  <h1>{{ project.name }}</h1>
-  <p>{{ project.description }}</p>
+  <div style="margin-bottom: 1rem;">
+    <FilterNav @filter="filter=$event" />
+  </div>
+ <Navbar/>
+<div v-for="project in filteredProjects" :key="project.id">
+<Project :project="project" @delete="handleDelete" @completed="handleCompleted"/>
 
   <hr />
 
